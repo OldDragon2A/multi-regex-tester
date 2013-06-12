@@ -8,6 +8,7 @@ import java.io.InputStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.yaml.snakeyaml.TypeDescription;
@@ -24,16 +25,26 @@ public class MultiRegexTester {
     CommandLineParser parser = new GnuParser();
     Options options = new Options();
     options.addOption("f", "file", true, "Specify the YAML file containing tests.");
+    options.addOption("h", "help", false, "print this message.");
     try {
       CommandLine line = parser.parse(options,  args);
-      if (line.hasOption("file")) {
+      if (line.hasOption("help")) {
+        showHelp(options);
+      } else if (line.hasOption("file")) {
         process(line.getOptionValue("file"));
+      } else {
+        showHelp(options);
       }
     } catch (ParseException e) {
       System.out.println("Unexpected exception: " + e.getMessage());
     } catch (FileNotFoundException e) {
       System.out.println("File Not Found: " +  e.getMessage());
     }
+  }
+  
+  public static void showHelp(Options options) {
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp("MultiRegexTester", options);
   }
   
   public static void process(String file) throws FileNotFoundException {
